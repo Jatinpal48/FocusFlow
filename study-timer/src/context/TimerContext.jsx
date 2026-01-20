@@ -117,17 +117,26 @@ export const TimerProvider = ({ children }) => {
     localStorage.removeItem("targetEnd");
   };
 
-  // ⭐ FIXED RESET
-  const reset = (newMode = mode) => {
-    setIsRunning(false);
-    setTargetEnd(null);
-    localStorage.removeItem("targetEnd");
-    setMode(newMode);
-    setTimeLeft(defaultConfig[newMode]);
-  };
+
+const reset = (newMode = mode) => {
+  const safeMode = defaultConfig[newMode] ? newMode : "work";
+
+  setIsRunning(false);
+  setTargetEnd(null);
+  localStorage.removeItem("targetEnd");
+
+  setMode(safeMode);
+  setTimeLeft(defaultConfig[safeMode]);
+};
 
 
-  const progress = (1 - timeLeft / defaultConfig[mode]) * 100;
+  const total = defaultConfig[mode] ?? defaultConfig.work;
+const safeTime = Number.isFinite(timeLeft) ? timeLeft : total;
+
+const progress = Math.min(
+  100,
+  Math.max(0, (1 - safeTime / total) * 100)
+);
 
   return (
     <TimerContext.Provider
