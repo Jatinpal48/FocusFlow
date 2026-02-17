@@ -10,7 +10,13 @@ import statsRoutes from "./routes/statsRoutes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+   origin: "https://focus-flow-study-tracker.vercel.app",
+   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true
+}
+
+));
 app.use(express.json());
 
 // connect to database
